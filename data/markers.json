@@ -1,0 +1,52 @@
+{"CELL_TYPES": { "Unassigned": 0, 
+            "tumor/pdl1-": 1, 
+            "tumor/pdl1+": 2,
+            "cd8/pd1-": 3,
+            "cd8/pd1+": 4,
+            "pdl1_other": 5,
+            "pd1_other": 6,
+            "foxp3_any": 7
+          }, 
+
+"CELL_TYPE_FREQ": { "Unassigned": 0.44084259455803365, 
+                    "tumor/pdl1-": 0.3365914135944825, 
+                    "tumor/pdl1+": 0.07462437623897736,
+                    "cd8/pd1-": 0.035252112782468856,
+                    "cd8/pd1+": 0.007919525383970557,
+                    "pdl1_other": 0.07379689225798793,
+                    "pd1_other": 0.017988494374907807,
+                    "foxp3_any": 0.0129845908091714
+                    }, 
+
+"features_to_normalize": ["entirecell_area_pixels",
+                "nucleus_area_pixels"
+               ],
+
+"EXPRESSION_MARKERS": ["pd1", 
+                     "pdl1",
+                     "foxp3", 
+                     "tumor", 
+                     "cd8",
+                     "entirecell_area_pixels_norm",
+                     "nucleus_area_pixels_norm"
+                    ], 
+
+ "CELL_FEATURES": ["pd1", 
+                      "pdl1",
+                      "foxp3", 
+                      "tumor", 
+                      "cd8",
+                      "entirecell_area_pixels_norm",
+                      "nucleus_area_pixels_norm"
+                       ],
+
+"EXPRESSION_FEATURES":["pd1", 
+                      "pdl1",
+                      "foxp3", 
+                      "tumor", 
+                      "cd8"],
+                      
+"CELL_MORPHOLOGY_FEATURES": ["entirecell_area_pixels_norm",
+                      "nucleus_area_pixels_norm"
+                      ]            
+}

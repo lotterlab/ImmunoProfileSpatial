@@ -1,0 +1,21 @@
+{
+    "project_root": "..",
+    "dataset_root": "../data",
+    "experiment_root": "../data",
+    "raw_data_root": "../data/cell_data",
+    "polygon_root": "../data/polygons",
+    "nx_graph_root": "../data/graph",
+    "nx_graph_folder_name": "graph",
+    "processed_data_root": "../data",
+    "dataset_splits_dict": "../data/experiment_split.json",
+    "label_path": "../data/full_graph_labels.csv",
+    "model_save_root": "../models",
+    "checkpoint_name": "checkpoints",
+    "training_log_name": "training_log.xlsx",
+    "inference_root": "..models/inference_outputs",
+    "results_root": "../results",
+    "marker_path": "../data/markers.json",
+    "dataset_kwargs_path": "../configs/dataset_params.json",
+    "train_kwargs_path": "../configs/train_params.json",
+    "generic_path":"../data"
+}

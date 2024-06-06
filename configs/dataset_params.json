@@ -1,0 +1,35 @@
+{
+    "dataset_kwargs": {
+        "subsample_neighbor_size": 4,
+        "node_features": [
+            "cell_type",
+            "expression_features",
+            "cell_morphology",
+            "neighborhood_expression",
+            "center_coord"
+        ],
+        "edge_features": [
+            "edge_type",
+            "distance"
+        ],
+        "use_neighbor_node_features": [
+            "expression_features"
+        ],
+        "use_center_node_features": [
+            "expression_features"
+        ],
+        "subgraph_source": "on-the-fly",
+        "subgraph_size_limit": 200,
+        "class_weight": [
+            2,
+            1
+        ],
+        "sampling_avoid_unassigned": 0
+    },
+    "process_kwargs": {
+        "method": "conserve",
+        "upper_bound": 18,
+        "lower_bound": 0,
+        "neighborhood_size": 10
+    }
+}

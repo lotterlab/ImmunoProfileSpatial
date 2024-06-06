@@ -1,0 +1,24 @@
+{
+    "model_kwargs": {
+        "num_layer": 3,
+        "emb_dim": 512,
+        "num_node_tasks": 0,
+        "num_graph_tasks": 1,
+        "node_embedding_output": "last",
+        "drop_ratio": 0.25,
+        "graph_pooling": "max",
+        "gnn_type": "gin"
+    },
+    "train_kwargs": {
+        "batch_size": 256,
+        "lr": [1e-06],
+        "weight_decay": 0.001,
+        "graph_loss_weight": 1.0,
+        "graph_task_criterion": "CoxLoss",
+        "num_iterations": 801,
+        "num_graphs_per_segment": 0,
+        "num_iterations_per_segment": 5000,
+        "evaluate_freq": 20,
+        "evaluate_on_train": 1
+    }
+}
