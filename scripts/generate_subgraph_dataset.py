@@ -19,6 +19,7 @@ from joblib import cpu_count, delayed, Parallel
 from pathlib import Path
 from pycrumbs import tracked
 from copy import deepcopy
+from shutil import copyfile
 
 import sys
 sys.path.append(os.path.join(os.getcwd(),'../space-gm'))
@@ -49,6 +50,10 @@ def generate_dataset(root: Path,
     paths = json.load(open(json_path))
 
     print(paths) 
+
+    # copy label file ... just so that it complies with the expected organization in the space-gm code
+
+    copyfile(paths['label_path'], './data/metadata/full_graph_labels.csv')
 
     # import cell and marker settings 
     f = open(paths['marker_path'])
@@ -157,7 +162,6 @@ def generate_dataset(root: Path,
 if __name__ == "__main__": 
 
     root = '..'
-    dataset = 'endometrial'
     exp_name = 'cox_survival'
     target_label_name = 'survival_cox'
     roi_per_case = 'all' # 'single', 'all' uses either only one single roi per case ('single') or all rois that are available for a specific case ('all')

@@ -19,7 +19,7 @@ from pycrumbs import tracked
 
 import sys
 sys.path.append(os.path.join(os.getcwd(),'../space-gm'))
-from graph_build import calculate_voronoi_from_coords, read_raw_voronoi, read_cell_data, build_graph_from_voronoi, build_polygon_to_cell_mapping, get_edge_type 
+from graph_build import calcualte_voronoi_from_coords, read_raw_voronoi, read_cell_data, build_graph_from_voronoi, build_polygon_to_cell_mapping, get_edge_type 
 from utils import load_sample_phenotypes
 
 from utils_spatial import categorise_cell
@@ -327,7 +327,7 @@ def generate_voronoi(aq_id, raw_data_root, polygon_root):
     cell_data.columns = [col.upper() for col in cell_data.columns] # For backward compatibility
         
     # generate and save Voronoi polygons
-    polygons = calculate_voronoi_from_coords(cell_data.X, cell_data.Y)
+    polygons = calcualte_voronoi_from_coords(cell_data.X, cell_data.Y)
     pickle.dump(polygons, open(os.path.join(polygon_root, aq_id+'.pkl'), 'wb'))
 
 
