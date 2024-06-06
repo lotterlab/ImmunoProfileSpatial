@@ -1,0 +1,3 @@
+[submodule "space-gm"]
+	path = space-gm
+	url = https://gitlab.com/username/space-gm.git
