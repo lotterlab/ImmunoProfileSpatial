@@ -8,10 +8,11 @@ import numpy as np
 import os
 import pandas as pd
 import random
-import sys 
 import torch
-sys.path.append('/lotterlab/users/khoebel/mIP/baseline_repos/space-gm')
+# sys.path.append('/lotterlab/users/khoebel/mIP/baseline_repos/space-gm')
 
+import sys
+sys.path.append(os.path.join(os.getcwd(),'../space-gm'))
 from models import BinaryCrossEntropy, CoxSGDLossFn
 from scipy.spatial import Delaunay, Voronoi, voronoi_plot_2d
 

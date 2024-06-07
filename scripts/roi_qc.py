@@ -50,12 +50,15 @@ def test_addional_qc_criteria(roi, save_root, additional_criteria_accepted_value
 
     return additional_qc_passed 
 
-@tracked(directory_parameter='save_root')
+@tracked(directory_parameter='save_root') # uncomment to use pycrumbs for tracking
 def inner_tumor_qc(parquet_path, save_root, threshold=0.95,  
                    additional_criteria_accepted_values=None):
     # identifies all ROIs with an inner tumor cell ratio at or above the defined threshold
     
-    df = pd.read_parquet(parquet_path)
+    if parquet_path[-3:] == 'csv':
+        df = pd.read_csv(parquet_path, index_col=[0,1,2])
+    else:
+        df = pd.read_parquet(parquet_path)
     roi_ids = np.unique(df.index.get_level_values(1).to_numpy())
 
     qc_passed_dict = dict()
@@ -128,11 +131,14 @@ def identifyTSI(roi_df, stroma_criterion=0.2, tumor_criterion=0.3, print_density
         return False
 
 
-@tracked(directory_parameter='save_root')
+@tracked(directory_parameter='save_root') # uncomment to use pycrumbs for tracking
 def tumor_stroma_interface_qc(parquet_path, save_root, stroma_threshold=0.1):
     # identifies all ROIs with an inner tumor cell ratio at or above the defined threshold
     
-    df = pd.read_parquet(parquet_path)
+    if parquet_path[-3:] == 'csv':
+        df = pd.read_csv(parquet_path, index_col=[0,1,2])
+    else:
+        df = pd.read_parquet(parquet_path)
     roi_ids = np.unique(df.index.get_level_values(1).to_numpy())
 
     qc_passed_dict = dict()
@@ -170,34 +176,11 @@ def tumor_stroma_interface_qc(parquet_path, save_root, stroma_threshold=0.1):
 
 
 if __name__ == "__main__": 
-    parquet_path = '/ksg-images/cells/non-small_cell_lung_cancer.parquet'
-    # parquet_path = '/ksg-images/cells/colorectal_cancer.parquet'
-    # parquet_path = '/ksg-images/cells/breast_cancer.parquet'
-    # parquet_path = '/ksg-images/cells/bladder_cancer.parquet'
-    # parquet_path = '/ksg-images/cells/esophagogastric_cancer.parquet'
-    # parquet_path = '/ksg-images/cells/melanoma.parquet'
-    # parquet_path = '/ksg-images/cells/pancreatic_cancer.parquet'
-    # parquet_path = '/ksg-images/cells/head_and_neck_cancer.parquet'
-    # parquet_path = '/ksg-images/cells/endometrial_cancer.parquet'
+    parquet_path = '../data/nsclc_samples.csv' # path to cell parquet or csv file
     
-    parquet_dict = {'CRC': '/ksg-images/cells/colorectal_cancer.parquet',
-                     'breast': '/ksg-images/cells/breast_cancer.parquet',
-                     'bladder': '/ksg-images/cells/bladder_cancer.parquet',
-                     'esophagus': '/ksg-images/cells/esophagogastric_cancer.parquet',
-                     'melanoma': '/ksg-images/cells/melanoma.parquet',
-                     'pancreatic': '/ksg-images/cells/pancreatic_cancer.parquet',
-                     'headandneck': '/ksg-images/cells/head_and_neck_cancer.parquet',
-                     'endometrial': '/ksg-images/cells/endometrial_cancer.parquet'
-                     }
-
-   
-    for tumor_type, parquet_path in parquet_dict.items():
-        print(tumor_type, parquet_path)
-
-        save_root = f'/lotterlab/users/khoebel/mIP/data/{tumor_type}/generic' 
-        print(save_root)
-        # additional_criteria_accepted_values = {'joao_lung_stg':[1,2,3,4]}
-        inner_tumor_qc(parquet_path, save_root, threshold=0.90, 
-                    # additional_criteria_accepted_values=additional_criteria_accepted_values
-                    )
-        # tumor_stroma_interface_qc(parquet_path, save_root, stroma_threshold=0.1)
+    save_root = '../data' 
+    print(save_root)
+    inner_tumor_qc(parquet_path, save_root, 
+                   threshold=0.90 
+                )
+    

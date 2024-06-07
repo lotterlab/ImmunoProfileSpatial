@@ -9,13 +9,13 @@ updated:
 '''
 
 import json
-import networkx as nx
-import numpy as np
+# import networkx as nx
+# import numpy as np
 import os
 import pandas as pd
-import torch
+# import torch
 
-from joblib import cpu_count, delayed, Parallel
+# from joblib import cpu_count, delayed, Parallel
 from pathlib import Path
 from pycrumbs import tracked
 from copy import deepcopy
@@ -24,11 +24,11 @@ from shutil import copyfile
 import sys
 sys.path.append(os.path.join(os.getcwd(),'../space-gm'))
 from transform import CODEXAddGraphLabel
-from additional_transforms import CODEXNodeTransform, get_feature_names
+from additional_transforms import CODEXNodeTransform# , get_feature_names
 # from data import CODEXGraphDataset_K
 
-from torch_geometric.data import Dataset
-from data_IP import nx_to_tg_graph, CODEXGraphDataset_IP
+# from torch_geometric.data import Dataset
+from data_IP import CODEXGraphDataset_IP
 
 paths = json.load(open('../configs/paths.json'))
 
@@ -162,11 +162,11 @@ def generate_dataset(root: Path,
 if __name__ == "__main__": 
 
     root = '..'
-    exp_name = 'cox_survival'
-    target_label_name = 'survival_cox'
+    exp_name = 'binary_example'
+    target_label_name = 'is_ned' # using a pseudo binary label for demonstration purposes, use 'survival_cox' for cox survival labels (status and time)
     roi_per_case = 'all' # 'single', 'all' uses either only one single roi per case ('single') or all rois that are available for a specific case ('all')
 
-    # record_directory = os.path.join(root, 'data', dataset, exp_name)
+    record_directory = ... # directory for pycrumbs record
     generate_dataset(root,
                      # dataset,
                      exp_name,

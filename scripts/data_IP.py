@@ -1235,12 +1235,12 @@ class CODEXGraphDataset_IP(Dataset):
             worklist = [os.path.join(self.raw_dir, filename +'.gpkl') for filename in self.ROI_ids]
         
         print('len worklist:', len(worklist))
-        print(worklist)
-        for raw_path in worklist:
+
+        '''for raw_path in worklist:
             # print(raw_path)
-            process_graph(raw_path)
+            process_graph(raw_path)'''
         
-        # Parallel(n_jobs=cpu_count()-2)(delayed(process_graph)(raw_path) for raw_path in worklist)
+        Parallel(n_jobs=cpu_count()-2)(delayed(process_graph)(raw_path) for raw_path in worklist)
             
         return
     
@@ -1468,7 +1468,7 @@ class CODEXGraphDataset_IP(Dataset):
 
 
 
-
+'''
 if __name__ == '__main__':
 
     dataset_kwargs = {
@@ -1483,7 +1483,6 @@ if __name__ == '__main__':
         'subgraph_allow_distant_edge': True,
         'subgraph_size_limit': 3 * 55. + 35.,
     }
-    
     
     # %% UPMC - Version 8.2
     process_kwargs = {
@@ -1500,5 +1499,5 @@ if __name__ == '__main__':
     dataset_kwargs['cell_features'] = EXPRESSION_MARKERS
     dataset_kwargs['sampling_avoid_unassigned'] = True # True for 8.2, False for 8
     dataset = CODEXGraphDataset("data/version8.2", **dataset_kwargs)
-    dataset.save_all_subgraphs_to_chunk()
+    dataset.save_all_subgraphs_to_chunk()'''
 

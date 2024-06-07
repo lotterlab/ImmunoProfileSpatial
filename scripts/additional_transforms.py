@@ -1,73 +1,30 @@
 import os
 import numpy as np
-import pandas as pd
-import pickle
-from copy import deepcopy
-from datetime import date
-
-import torch
-import torch_geometric
-
-from data import get_feature_names
-
-from utils import get_all_graph_labels, EDGE_TYPES, EXPRESSION_MARKERS
-from utils import CELL_TYPES_VERSION8_2, CELL_TYPE_LABELS_VERSION8_2, EXPRESSION_MARKERS
-
 import random
+import torch
 
+from copy import deepcopy
 
-   
-def get_feature_names(features, cell_types=CELL_TYPES_VERSION8_2, cell_features=EXPRESSION_MARKERS, cell_morphology_features=None, expression_features=None): # expression_markers=EXPRESSION_MARKERS,
-    '''adapted from /space-gm/data.py to comply with the structure of the ImmunoProfile data'''
-    
-    """ helper fn for getting feature names """
-    # print(cell_morphology_features)
-    # print(expression_features)
-    feat_names = []
-    for feat in features:
-        # print(feat)
-        if feat in ["size", "distance", "cell_type", "edge_type"]:
-            feat_names.append(feat)
-        elif feat == "center_coord":
-            feat_names.extend(["center_coord-x", "center_coord-y"])
-        elif feat == "expression":
-            feat_names.extend(["expression-%s" %
-                               exp for exp in cell_features])
-        elif feat == "cell_morphology":
-            feat_names.extend(["cell_morphology-%s" %
-                               exp for exp in cell_morphology_features])
-        elif feat == "expression_features":
-            feat_names.extend(["expression_features-%s" %
-                               exp for exp in expression_features])
-        elif feat == "neighborhood_composition":
-            feat_names.extend(["neighborhood_composition-%s" %
-                ct for ct in sorted(cell_types.keys(), key=lambda x: cell_types[x])])
-        elif feat == "neighborhood_expression":
-            feat_names.extend(["neighborhood_expression-%s" %
-                exp for exp in expression_features])
-        else:
-            print(feat)
-            raise ValueError("Feature not recognized")
-    return feat_names
-    
+from data_IP import get_feature_names
 
+from utils import CELL_TYPES_VERSION8_2, EXPRESSION_MARKERS
 
 class CODEXNodeTransform(object):
     '''adapted from space-gm/transforms.py to comply with the structure of the Immuno Profile data'''
 
     """ Base transformer object """
     def __init__(self, 
-                 node_features=None, 
-                 edge_features=None,
+                 node_features=None, # classes of features for the nodes (can be filtered) 
+                 edge_features=None, # edge_type (self, distant), edge_distance: distance between the centers of connected cells
                  cell_types=CELL_TYPES_VERSION8_2,
-                 # expression_markers=EXPRESSION_MARKERS,
-                 cell_features = EXPRESSION_MARKERS,
-                 cell_morphology_features = None,
-                 use_selected_morphology_features = None,
+                 cell_features = EXPRESSION_MARKERS, # specify expression features (markers)
+                 cell_morphology_features = None, # all cell morphology features
+                 use_selected_morphology_features = None, # if you do not want to use all cell morphology features, specify the cell morphology features that should not be masked
                  expression_features = None,
-                 use_neighbor_node_features=None,
-                 use_center_node_features=None,
-                 use_edge_features=None,):
+                 use_neighbor_node_features=None, # feature classes for all neighborh nodes (all nodes except the center node/cell)
+                 use_center_node_features=None, # feature classes for the center node/cell (if None: all node_features will be used)
+                 use_edge_features=None, # specify the edge features that should not be masked (if none: all edge_features will be used)
+                 ):
         
         self.node_features = node_features
         self.edge_features = edge_features
