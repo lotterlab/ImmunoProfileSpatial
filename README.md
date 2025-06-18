@@ -12,10 +12,10 @@ The `space-gm` directory is a submodule that contains the GNN implementation use
 
 Create the conda environment listed in `immunoprofilespatialenv.yml`:
 
+
 ```bash
-conda env create -f immunoprofilespatialenv.yml```
-
-
+conda env create -f immunoprofilespatialenv.yml
+```
 ---
 
 ## Workflow
