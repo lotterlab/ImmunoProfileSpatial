@@ -14,6 +14,7 @@ Create the conda environment listed in `immunoprofilespatialenv.yml`:
 
 ```bash
 conda env create -f immunoprofilespatialenv.yml
+```` ``` ````
 
 ---
 
