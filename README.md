@@ -21,10 +21,15 @@ conda env create -f immunoprofilespatialenv.yml
 ## Workflow
 
 **Preprocess ROIs:** Use scripts/preprocessing.py and scripts/roi_qc.py to convert raw single-cell CSV files into graphs (Voronoi polygons, Delaunay triangulation) and to perform ROI quality control.
+
 **Create dataset splits:** scripts/create_dataset_splits.py generates training/validation/test splits at the case or ROI level. Example splits are provided in data/experiment_split.json.
+
 **Generate graph/subgraph datasets:** Run scripts/generate_subgraph_dataset.py to build full graphs and spatial neighborhood subgraphs for each split. Paths and dataset parameters are controlled via JSON files in configs/.
+
 **Train the model:** scripts/train_model.py trains a SPACE‑GM model on the generated subgraphs. Training parameters (batch size, learning rate, etc.) are defined in configs/train_params.json.
+
 **Evaluation:** Model outputs include per-neighborhood survival predictions that can be aggregated at the patient level. Example evaluation utilities are provided in scripts/utils_spatial.py.
+
 **Analysis:** Subgraph manipulations described in the paper are implemented as transformations and can be found in TBD
 Note: parts of the preprocessing pipeline and the training scripts may still be incomplete. We will update the repository as additional code becomes available.
 
