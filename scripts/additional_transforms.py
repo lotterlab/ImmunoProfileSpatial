@@ -9,6 +9,32 @@ from data_IP import get_feature_names
 
 from utils import CELL_TYPES_VERSION8_2, EXPRESSION_MARKERS
 
+def convert_celltype_to_expression_pattern(celltype, celltypes):
+                
+            target_celltype_int = celltypes[celltype]
+
+            expression_array = np.zeros(6)
+            expression_array[0] = target_celltype_int
+            if celltype=='tumor/pdl1-':
+                expression_array[4] = 1
+            elif celltype == 'tumor/pdl1+':
+                expression_array[2] = 1
+                expression_array[4] = 1
+            elif celltype == 'cd8/pd1-':
+                expression_array[5] = 1
+            elif celltype == 'cd8/pd1+':
+                expression_array[1] = 1
+                expression_array[5] = 1
+            elif celltype == 'pdl1_other':
+                expression_array[2] = 1
+            elif celltype == 'pd1_other':
+                expression_array[1] = 1
+            elif celltype == 'foxp3_any':
+                expression_array[3] = 1
+
+            return expression_array 
+
+
 class CODEXNodeTransform(object):
     '''adapted from space-gm/transforms.py to comply with the structure of the Immuno Profile data'''
 
@@ -124,3 +150,92 @@ class CODEXNodeTransform(object):
         center_node_feat = center_node_feat * self.center_node_feature_masks
         data.x[data.center_node_index] = center_node_feat
         return data
+
+
+class CODEXManipulateMarkerExpression(object):
+    def __init__(self, original_celltype, target_celltype, celltypes, n='all', seed=0):
+        # to manipulate certain cell types 
+        # e.g. to turn a PDL1+ tumor cell into a PDL1 - 
+        self.original_celltype = original_celltype
+        self.target_celltype = target_celltype
+
+        self.celltypes = celltypes
+        self.original_celltype_int = celltypes[original_celltype]
+
+        self.n=n # number of cells that should be switched ['all', 'single']
+        # if all: all cells that are original celltype will be switches to target_celltype
+        # if 'single': a randomly chosen cell of the original celltype will be switched to the target celltype 
+        self.seed = seed
+        torch.manual_seed(self.seed)
+        random.seed(self.seed)
+
+        self.target_celltype_expression  = convert_celltype_to_expression_pattern(self.target_celltype, self.celltypes)
+        
+    def __call__(self, data):
+
+        # only continue if at least one cell can be manipulated 
+        assert len(np.where(data.x[:,0]==self.original_celltype_int)[0]) > 0 # print('selected cell type is not present in subgraph')
+        if self.n=='all':
+            data.x[np.where(data.x[:,0]==self.original_celltype_int)[0],:6]=torch.tensor(self.target_celltype_expression) 
+        elif self.n == 'single':
+            target_index = random.choice(np.where(data.x[:,0]==self.original_celltype_int)[0])
+            data.x[target_index,:6]=torch.tensor(self.target_celltype_expression) 
+
+        return data
+    
+class CODEXManipulateMarkerExpression_connectivity(object):
+    def __init__(self, original_celltype, target_celltype, connectivity_to, connectivity_pattern, celltypes, seed=0):
+        # to manipulate certain cell types 
+        # e.g. to turn a PDL1+ tumor cell into a PDL1 - 
+        self.original_celltype = original_celltype
+        self.target_celltype = target_celltype
+        
+        # connectivity conditions
+        self.connectivity_to = celltypes[connectivity_to] # select cells based on their connection to this celltype
+        self.connectivity_pattern = connectivity_pattern # all/single (the condition is that either all or just a single connection of the selected cell is to the connectivity_to celltype)
+
+        self.celltypes = celltypes
+        self.original_celltype_int = celltypes[original_celltype]
+
+        # if all: all cells that are original celltype will be switches to target_celltype
+        # if 'single': a randomly chosen cell of the original celltype will be switched to the target celltype 
+        self.seed = seed
+        torch.manual_seed(self.seed)
+        random.seed(self.seed)
+
+        self.target_celltype_expression  = convert_celltype_to_expression_pattern(self.target_celltype, self.celltypes)
+        
+        
+    def __call__(self, data):
+
+        sel_ct_inds = np.where(np.asarray(data.x[:,0])==self.original_celltype_int)[0] 
+        adjacency_matrix = np.asarray(data.edge_index)
+        # print(adjacency_matrix)
+        temp_celltypes = np.asarray(data.x[:,0])
+
+        # identify all cells of the original_celltype that are connected to the connectivity_to celltype
+        fulfill_conditions = list()
+        for sel_ct_idx in sel_ct_inds:
+            temp_conn = adjacency_matrix.T[np.where(adjacency_matrix.T[:,0]==sel_ct_idx)[0],:]
+            temp_conn_ct = [temp_celltypes[conn_cell] for conn_cell in temp_conn[:,1]]
+            if self.connectivity_pattern == 'all':
+                if temp_conn_ct.count(self.connectivity_to) == len(temp_conn):
+                    # meaning if the current cell is only connected to cells of the type defined by connectivity_to
+                    fulfill_conditions.append(sel_ct_idx)
+            elif self.connectivity_pattern == 'single':
+                if temp_conn_ct.count(self.connectivity_to) > 0:
+                    # meaning if the current cell is connected to at least one cell of the type defined by connectivity_to
+                    fulfill_conditions.append(sel_ct_idx)
+                
+        # print(fulfill_conditions)
+        # select_cell_to_manipulate(self, data)
+        
+        if len(fulfill_conditions) >= 1:
+            target_index = random.choice(fulfill_conditions)
+            
+            data.x[target_index,:6]=torch.tensor(self.target_celltype_expression)
+
+            return data
+        
+        else:
+            return None
