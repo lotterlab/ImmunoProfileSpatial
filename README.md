@@ -30,7 +30,7 @@ conda env create -f immunoprofilespatialenv.yml
 
 **Evaluation:** Model outputs include per-neighborhood survival predictions that can be aggregated at the patient level. Example evaluation utilities are provided in scripts/utils_spatial.py.
 
-**Analysis:** Subgraph manipulations described in the paper are implemented as transformations and can be found in additional_transforms.py
+**Analysis:** Subgraph manipulations described in the paper are implemented as transformations and can be found in additional_transforms.py. Visualization utilities can be found in utils_spatial.py.
 
 Note: parts of the preprocessing pipeline and the training scripts may still be incomplete. We will update the repository as additional code becomes available.
 
@@ -40,7 +40,10 @@ Note: parts of the preprocessing pipeline and the training scripts may still be 
 The dataset used in the paper is derived from the ImmunoProfile study (Dana‑Farber Cancer Institute) and is not included in this repository. The data/ directory provides minimal placeholder files to illustrate expected formats:
 
 full_graph_labels.csv – survival labels per ROI
+
 markers.json – list of cell types and features
+
 experiment_split.json – example train/validation/test split
+
 Users must supply their own ROI-level single-cell data in the required format to reproduce the analyses.
 
