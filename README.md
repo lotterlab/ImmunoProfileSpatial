@@ -31,6 +31,7 @@ conda env create -f immunoprofilespatialenv.yml
 **Evaluation:** Model outputs include per-neighborhood survival predictions that can be aggregated at the patient level. Example evaluation utilities are provided in scripts/utils_spatial.py.
 
 **Analysis:** Subgraph manipulations described in the paper are implemented as transformations and can be found in TBD
+
 Note: parts of the preprocessing pipeline and the training scripts may still be incomplete. We will update the repository as additional code becomes available.
 
 ---
