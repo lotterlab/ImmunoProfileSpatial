@@ -37,13 +37,49 @@ Note: parts of the preprocessing pipeline and the training scripts may still be 
 ---
 ## Data
 
-The dataset used in the paper is derived from the ImmunoProfile study (Dana‑Farber Cancer Institute) and is not included in this repository. The data/ directory provides minimal placeholder files to illustrate expected formats:
+The dataset used in this paper is derived from the publicly available 
+[ImmunoProfile project](https://doi.org/10.7303/syn52596661) on Synapse 
+(syn52596661). It is **not** included in this repository, but can be freely 
+downloaded from Synapse after account registration.
 
-full_graph_labels.csv – survival labels per ROI
+### Downloading the data
 
-markers.json – list of cell types and features
+This paper uses the **NSCLC subset** of the pan-cancer ImmunoProfile dataset. 
+Two files are needed:
 
-experiment_split.json – example train/validation/test split
+**1. Metadata file**  
+Available as a [Synapse table](https://www.synapse.org/Synapse:syn69058119/tables/).  
+Filter to NSCLC patients: `oncotree_metamain == 'Non-Small Cell Lung Cancer'`.
 
-Users must supply their own ROI-level single-cell data in the required format to reproduce the analyses.
+**2. Single-cell parquet file**  
+Available as a parquet file. Download [single_cells.parquet](https://www.synapse.org/Synapse:syn69057790.draft/datasets/) from Synapse.  
+This file contains ~39 million spatially-resolved cells across all cancer types. 
+Filter to the `case_id` values from the NSCLC metadata, keeping only 
+`region_label == 'InnerTumor'` cells.
+
+### Data format expected by the pipeline
+
+After filtering, the single-cell data should have the following columns, 
+which map directly to the graph construction inputs:
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `case_id` | int64 | De-identified patient ID |
+| `roi_id` | object | ROI identifier |
+| `region_label` | object | segmented region identifier |
+| `cell_x` | int64 | Cell centroid x |
+| `cell_y` | int64 | Cell centroid y |
+| `cd8` | bool | CD8 marker positivity |
+| `pd1` | bool | PD-1 marker positivity |
+| `pdl1` | bool | PD-L1 marker positivity |
+| `foxp3` | bool | FOXP3 marker positivity |
+| `tumor` | bool | Cytokeratin (tumor) marker positivity |
+
+The `data/` directory in this repository contains minimal placeholder files 
+illustrating the expected formats:
+- `full_graph_labels.csv` — survival labels per ROI
+- `markers.json` — cell type and feature definitions
+- `experiment_split.json` — the exact train/validation/test split used in the paper 
+(305/72/129 patients, stratified by survival status)
+
 
